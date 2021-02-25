@@ -2,6 +2,8 @@ app:
   forecast:
     years: ${FORECAST_YEARS}
 spring:
+  jpa:
+    open-in-view: false
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}

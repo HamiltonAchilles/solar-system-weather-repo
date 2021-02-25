@@ -20,12 +20,14 @@ import static com.meli.forecasts.weather.dto.PlanetEnum.BETASOIDE;
 import static com.meli.forecasts.weather.dto.PlanetEnum.FERENGI;
 import static com.meli.forecasts.weather.dto.PlanetEnum.VULCANO;
 import static java.lang.String.format;
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 @Service
 public class SolarSystemDailyForecastService {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SolarSystemDailyForecastService.class);
+
     private static SunCartesianCoordinate sunCartesianCoordinate = new SunCartesianCoordinate();
-    private static ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${app.forecast.years}")
     public int FORECASTING_YEARS;
@@ -36,20 +38,12 @@ public class SolarSystemDailyForecastService {
 
     public void printForecasts(List<SolarSystemDailyForecast> forecasts) {
 
-        forecasts.forEach(forecast -> printForecast(forecast));
+        forecasts.forEach(forecast -> log.info("Solar System daily forecast.", keyValue("dailyForecast", forecast)));
 
-        System.out.println(format("sun inside %s - planets aligned %s",
+        log.info(format("sun inside %s - planets aligned %s",
                                   forecasts.stream().filter(forecast -> forecast.isSunInside()).count(),
                                   forecasts.stream().filter(forecast -> forecast.isPlanetsAligned()).count())
         );
-    }
-
-    private void printForecast(SolarSystemDailyForecast forecast) {
-        try {
-            System.out.println(objectMapper.writeValueAsString(forecast));
-        } catch (JsonProcessingException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     public List<SolarSystemDailyForecast> generateForecasts() {
