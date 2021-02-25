@@ -1,4 +1,4 @@
-package com.meli.forecasts.weather.model.coordinate;
+package com.meli.forecasts.weather.model.coordinate.cartesian;
 
 public class SunCartesianCoordinate extends CartesianCoordinate {
 

@@ -1,8 +1,8 @@
 package com.meli.forecasts.weather.model.area;
 
-import com.meli.forecasts.weather.model.coordinate.CartesianCoordinate;
+import com.meli.forecasts.weather.model.coordinate.cartesian.CartesianCoordinate;
 
-public class TriangleArea extends Area {
+public class TriangleArea {
 
     private CartesianCoordinate coordinateA;
     private CartesianCoordinate coordinateB;
@@ -17,15 +17,16 @@ public class TriangleArea extends Area {
         this.coordinateC = coordinateC;
     }
 
-    public double getArea() {
-        return 0.5 * Math.abs(
-                (coordinateA.getX() * coordinateB.getY()) +
-                (coordinateC.getX() * coordinateA.getY()) +
-                (coordinateB.getX() * coordinateC.getY()) -
-                (coordinateC.getX() * coordinateB.getY()) -
-                (coordinateA.getX() * coordinateC.getY()) -
-                (coordinateB.getX() * coordinateA.getY())
-        );
+    public CartesianCoordinate getCoordinateA() {
+        return coordinateA;
+    }
+
+    public CartesianCoordinate getCoordinateB() {
+        return coordinateB;
+    }
+
+    public CartesianCoordinate getCoordinateC() {
+        return coordinateC;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.meli.forecasts.weather.model.area;
 
-public class QuadrilateralArea extends Area {
+public class QuadrilateralArea {
 
     private TriangleArea triangleAreaOne;
     private TriangleArea triangleAreaTwo;
@@ -10,8 +10,12 @@ public class QuadrilateralArea extends Area {
         this.triangleAreaTwo = triangleTwo;
     }
 
-    public double getArea() {
-        return (triangleAreaOne.getArea() / 2) + (triangleAreaTwo.getArea() / 2);
+    public TriangleArea getTriangleAreaOne() {
+        return triangleAreaOne;
+    }
+
+    public TriangleArea getTriangleAreaTwo() {
+        return triangleAreaTwo;
     }
 
 }

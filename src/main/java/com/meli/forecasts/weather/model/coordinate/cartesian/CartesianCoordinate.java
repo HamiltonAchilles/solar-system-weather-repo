@@ -1,4 +1,4 @@
-package com.meli.forecasts.weather.model.coordinate;
+package com.meli.forecasts.weather.model.coordinate.cartesian;
 
 public class CartesianCoordinate {
 
@@ -14,16 +14,8 @@ public class CartesianCoordinate {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
 }
