@@ -1,7 +1,7 @@
 package com.meli.forecasts.weather.dto;
 
-import static com.meli.forecasts.weather.service.SolarSystemDailyForecastService.CLOCKWISE;
-import static com.meli.forecasts.weather.service.SolarSystemDailyForecastService.COUNTERWISE;
+import static com.meli.forecasts.weather.service.SolarSystemConfigurationService.CLOCKWISE;
+import static com.meli.forecasts.weather.service.SolarSystemConfigurationService.COUNTERWISE;
 
 public enum PlanetEnum {
 

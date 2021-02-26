@@ -1,4 +1,4 @@
-package com.meli.forecasts.weather.model.coordinate.cartesian;
+package com.meli.forecasts.weather.dto.coordinate.cartesian;
 
 public class SolarSystemDailyCartesianCoordinate {
 

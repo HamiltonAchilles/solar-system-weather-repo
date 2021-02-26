@@ -1,4 +1,4 @@
-package com.meli.forecasts.weather.model.coordinate.polar;
+package com.meli.forecasts.weather.dto.coordinate.polar;
 
 import static com.meli.forecasts.weather.dto.PlanetEnum.VULCANO;
 

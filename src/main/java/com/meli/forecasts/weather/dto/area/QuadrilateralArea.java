@@ -1,4 +1,4 @@
-package com.meli.forecasts.weather.model.area;
+package com.meli.forecasts.weather.dto.area;
 
 public class QuadrilateralArea {
 

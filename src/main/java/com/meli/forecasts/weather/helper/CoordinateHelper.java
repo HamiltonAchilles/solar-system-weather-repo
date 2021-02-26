@@ -1,9 +1,9 @@
 package com.meli.forecasts.weather.helper;
 
-import com.meli.forecasts.weather.model.coordinate.cartesian.CartesianCoordinate;
-import com.meli.forecasts.weather.model.coordinate.polar.PolarCoordinate;
-import com.meli.forecasts.weather.model.coordinate.cartesian.SolarSystemDailyCartesianCoordinate;
-import com.meli.forecasts.weather.model.coordinate.polar.SolarSystemDailyPolarCoordinate;
+import com.meli.forecasts.weather.dto.coordinate.cartesian.CartesianCoordinate;
+import com.meli.forecasts.weather.dto.coordinate.polar.PolarCoordinate;
+import com.meli.forecasts.weather.dto.coordinate.cartesian.SolarSystemDailyCartesianCoordinate;
+import com.meli.forecasts.weather.dto.coordinate.polar.SolarSystemDailyPolarCoordinate;
 
 public class CoordinateHelper {
 

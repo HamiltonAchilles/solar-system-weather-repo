@@ -1,10 +1,24 @@
 package com.meli.forecasts.weather.model;
 
+import com.meli.forecasts.weather.dto.WeatherEnum;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "forecast")
 public class SolarSystemDailyForecast {
 
+    @Id
     private int day;
-    private boolean sunInside;
-    private boolean planetsAligned;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "weather")
+    private WeatherEnum weather;
 
     public int getDay() {
         return day;
@@ -14,20 +28,12 @@ public class SolarSystemDailyForecast {
         this.day = day;
     }
 
-    public boolean isSunInside() {
-        return sunInside;
+    public WeatherEnum getWeather() {
+        return weather;
     }
 
-    public void setSunInside(boolean sunInside) {
-        this.sunInside = sunInside;
-    }
-
-    public boolean isPlanetsAligned() {
-        return planetsAligned;
-    }
-
-    public void setPlanetsAligned(boolean planetsAligned) {
-        this.planetsAligned = planetsAligned;
+    public void setWeather(WeatherEnum weather) {
+        this.weather = weather;
     }
 
 }

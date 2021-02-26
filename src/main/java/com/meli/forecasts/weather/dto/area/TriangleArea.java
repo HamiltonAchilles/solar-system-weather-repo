@@ -1,6 +1,6 @@
-package com.meli.forecasts.weather.model.area;
+package com.meli.forecasts.weather.dto.area;
 
-import com.meli.forecasts.weather.model.coordinate.cartesian.CartesianCoordinate;
+import com.meli.forecasts.weather.dto.coordinate.cartesian.CartesianCoordinate;
 
 public class TriangleArea {
 

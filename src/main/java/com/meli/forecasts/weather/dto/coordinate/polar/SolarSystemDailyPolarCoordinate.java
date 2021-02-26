@@ -1,9 +1,4 @@
-package com.meli.forecasts.weather.model.coordinate.polar;
-
-import com.meli.forecasts.weather.dto.PlanetEnum;
-import com.meli.forecasts.weather.model.coordinate.polar.BetasoidePolarCoordinate;
-import com.meli.forecasts.weather.model.coordinate.polar.FerengiPolarCoordinate;
-import com.meli.forecasts.weather.model.coordinate.polar.VulcanoPolarCoordinate;
+package com.meli.forecasts.weather.dto.coordinate.polar;
 
 import static com.meli.forecasts.weather.dto.PlanetEnum.BETASOIDE;
 import static com.meli.forecasts.weather.dto.PlanetEnum.FERENGI;
