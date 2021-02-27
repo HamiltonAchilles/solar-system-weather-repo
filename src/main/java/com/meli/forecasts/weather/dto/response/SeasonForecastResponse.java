@@ -1,13 +1,14 @@
-package com.meli.forecasts.weather.model;
+package com.meli.forecasts.weather.dto.response;
 
 import com.meli.forecasts.weather.dto.WeatherEnum;
 
-public class SolarSystemWeatherSeason {
+public class SeasonForecastResponse {
 
     private int startDay;
-    private int finalDay;
+    private int endDay;
     private int peakRainyDay;
     private WeatherEnum weather;
+    private String message;
 
     public int getStartDay() {
         return startDay;
@@ -17,12 +18,12 @@ public class SolarSystemWeatherSeason {
         this.startDay = startDay;
     }
 
-    public int getFinalDay() {
-        return finalDay;
+    public int getEndDay() {
+        return endDay;
     }
 
-    public void setFinalDay(int finalDay) {
-        this.finalDay = finalDay;
+    public void setEndDay(int endDay) {
+        this.endDay = endDay;
     }
 
     public int getPeakRainyDay() {
@@ -39,6 +40,14 @@ public class SolarSystemWeatherSeason {
 
     public void setWeather(WeatherEnum weather) {
         this.weather = weather;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

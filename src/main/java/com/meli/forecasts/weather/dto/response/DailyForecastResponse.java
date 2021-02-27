@@ -2,13 +2,13 @@ package com.meli.forecasts.weather.dto.response;
 
 import com.meli.forecasts.weather.dto.WeatherEnum;
 
-public class SolarSystemDailyForecastResponse {
+public class DailyForecastResponse {
 
     private int day;
     private WeatherEnum weather;
     private String message;
 
-    public SolarSystemDailyForecastResponse(int day, WeatherEnum weather, String message) {
+    public DailyForecastResponse(int day, WeatherEnum weather, String message) {
         this.day = day;
         this.weather = weather;
         this.message = message;
