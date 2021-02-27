@@ -1,7 +1,9 @@
 package com.meli.forecasts.weather.service;
 
+import com.meli.forecasts.weather.helper.DailyForecastHelper;
 import com.meli.forecasts.weather.model.DailyForecast;
 import com.meli.forecasts.weather.repository.DailyForecastRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,29 +22,28 @@ public class WeatherForecastService {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WeatherForecastService.class);
 
-    private SolarSystemConfigurationService service;
-    private DailyForecastRepository dailyRepository;
+    @Value("${app.forecast.years}")
+    private int FORECASTING_YEARS;
+    private DailyForecastRepository repository;
 
     public WeatherForecastService(
-            SolarSystemConfigurationService service,
-            DailyForecastRepository dailyRepository) {
-        this.service = service;
-        this.dailyRepository = dailyRepository;
+            DailyForecastRepository repository) {
+        this.repository = repository;
     }
 
-    public List<DailyForecast> getAllDailyForecasts() {
-        return dailyRepository.findAll();
+    public List<DailyForecast> findAllDailyForecasts() {
+        return repository.findAllOrderByDayAsc();
     }
 
-    public Optional<DailyForecast> getForecastByDay(Integer day) {
-        return dailyRepository.findById(day);
+    public Optional<DailyForecast> findForecastByDay(Integer day) {
+        return repository.findById(day);
     }
 
     @Transactional
-    public void generateForecasts() {
-        List<DailyForecast> forecasts = service.generateForecasts();
-        dailyRepository.deleteAll();
-        dailyRepository.saveAll(forecasts);
+    public void calculateAndSaveForecasts() {
+        List<DailyForecast> forecasts = DailyForecastHelper.calculateForecasts(FORECASTING_YEARS);
+        repository.deleteAll();
+        repository.saveAll(forecasts);
         Map<Integer, Optional<DailyForecast>> seasonsMap = forecasts.stream()
                                                                     .collect(groupingBy(
                                                                             DailyForecast::getSeason,
@@ -51,7 +52,7 @@ public class WeatherForecastService {
             if (dailyForecast.get().getWeather() == LLUVIA) {
                 final DailyForecast forecast = dailyForecast.get();
                 forecast.setWeather(LLUVIA_PICO_MAXIMO);
-                dailyRepository.save(forecast);
+                repository.save(forecast);
             }
         });
     }

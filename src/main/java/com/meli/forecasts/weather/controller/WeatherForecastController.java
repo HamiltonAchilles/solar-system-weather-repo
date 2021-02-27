@@ -32,19 +32,19 @@ public class WeatherForecastController {
 
     @PutMapping("/forecasts")
     public ResponseEntity<ResponseDto> calculateForecasts() {
-        service.generateForecasts();
+        service.calculateAndSaveForecasts();
         return ResponseEntity.ok(new ResponseDto("Success generating forecasts."));
     }
 
     @GetMapping("/forecasts")
     public ResponseEntity<List<DailyForecast>> retrieveAllForecasts() {
-        List<DailyForecast> forecasts = service.getAllDailyForecasts();
+        List<DailyForecast> forecasts = service.findAllDailyForecasts();
         return ResponseEntity.ok(forecasts);
     }
 
     @GetMapping(path = "/forecasts/day/{day}")
     public ResponseEntity<DailyForecastResponse> retrieveForecastForDay(@PathVariable Integer day) {
-        Optional<DailyForecast> forecast = service.getForecastByDay(day);
+        Optional<DailyForecast> forecast = service.findForecastByDay(day);
         if(forecast.isPresent()) {
             final String message = format("Forecast founded for day {0}.", day);
             log.info(message, day, keyValue("forecast", forecast.get()));
