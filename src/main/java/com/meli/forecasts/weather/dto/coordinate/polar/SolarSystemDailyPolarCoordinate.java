@@ -13,9 +13,9 @@ public class SolarSystemDailyPolarCoordinate {
 
     public SolarSystemDailyPolarCoordinate(int day) {
         this.day = day;
-        this.ferengiPolarCoordinate = new FerengiPolarCoordinate(day * FERENGI.getDegreesPerDay() * FERENGI.getClockwise());
-        this.betasoidePolarCoordinate = new BetasoidePolarCoordinate(day * BETASOIDE.getDegreesPerDay() * BETASOIDE.getClockwise());
-        this.vulcanoPolarCoordinate = new VulcanoPolarCoordinate(day * VULCANO.getDegreesPerDay() * VULCANO.getClockwise());
+        this.ferengiPolarCoordinate = new FerengiPolarCoordinate(day * FERENGI.getDegreesPerDay());
+        this.betasoidePolarCoordinate = new BetasoidePolarCoordinate(day * BETASOIDE.getDegreesPerDay());
+        this.vulcanoPolarCoordinate = new VulcanoPolarCoordinate(day * VULCANO.getDegreesPerDay());
     }
 
     public FerengiPolarCoordinate getFerengiPolarCoordinate() {

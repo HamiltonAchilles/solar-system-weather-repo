@@ -8,7 +8,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "forecast")
@@ -21,8 +20,19 @@ public class DailyForecast {
     private WeatherEnum weather;
     @Column(name = "season")
     private int season;
-    @Transient
+    @Column(name = "triangle_perimeter")
     private double trianglePerimeter;
+    @Column(name = "triangle_area")
+    private double triangleArea;
+    @Column(name = "quadrilateral_area")
+    private double quadrilateralArea;
+    @Column(name = "degrees_vulcano")
+    private int vulcanoDegrees;
+    @Column(name = "degrees_betasoide")
+    private int betasoideDegrees;
+    @Column(name = "degrees_ferengi")
+    private int ferengiDegrees;
+
 
     public int getDay() {
         return day;
@@ -54,6 +64,46 @@ public class DailyForecast {
 
     public void setTrianglePerimeter(double trianglePerimeter) {
         this.trianglePerimeter = trianglePerimeter;
+    }
+
+    public double getTriangleArea() {
+        return triangleArea;
+    }
+
+    public void setTriangleArea(double triangleArea) {
+        this.triangleArea = triangleArea;
+    }
+
+    public double getQuadrilateralArea() {
+        return quadrilateralArea;
+    }
+
+    public void setQuadrilateralArea(double quadrilateralArea) {
+        this.quadrilateralArea = quadrilateralArea;
+    }
+
+    public int getVulcanoDegrees() {
+        return vulcanoDegrees;
+    }
+
+    public void setVulcanoDegrees(int vulcanoDegrees) {
+        this.vulcanoDegrees = vulcanoDegrees;
+    }
+
+    public int getBetasoideDegrees() {
+        return betasoideDegrees;
+    }
+
+    public void setBetasoideDegrees(int betasoideDegrees) {
+        this.betasoideDegrees = betasoideDegrees;
+    }
+
+    public int getFerengiDegrees() {
+        return ferengiDegrees;
+    }
+
+    public void setFerengiDegrees(int ferengiDegrees) {
+        this.ferengiDegrees = ferengiDegrees;
     }
 
 }

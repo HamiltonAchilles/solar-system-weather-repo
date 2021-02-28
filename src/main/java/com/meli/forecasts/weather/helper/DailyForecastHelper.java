@@ -7,7 +7,9 @@ import com.meli.forecasts.weather.dto.coordinate.cartesian.SolarSystemDailyCarte
 import com.meli.forecasts.weather.dto.coordinate.cartesian.SunCartesianCoordinate;
 import com.meli.forecasts.weather.dto.coordinate.polar.SolarSystemDailyPolarCoordinate;
 import com.meli.forecasts.weather.model.DailyForecast;
+import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +20,27 @@ import static com.meli.forecasts.weather.dto.WeatherEnum.CONDICIONES_NORMALES;
 import static com.meli.forecasts.weather.dto.WeatherEnum.CONDICIONES_OPTIMAS;
 import static com.meli.forecasts.weather.dto.WeatherEnum.LLUVIA;
 import static com.meli.forecasts.weather.dto.WeatherEnum.SEQUIA;
+import static java.text.MessageFormat.format;
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
+@Component
 public class DailyForecastHelper {
 
-    private static SunCartesianCoordinate sunCartesianCoordinate = new SunCartesianCoordinate();
-    private static final int AREA_CONSIDERED_AS_ZERO = 1;
-    private static final int DEGREES_PER_REVOLUTION = 360;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DailyForecastHelper.class);
 
-    public static List<DailyForecast> calculateForecasts(int forecastingYears) {
-        List<DailyForecast> forecasts = new ArrayList<>();
-        int numberOfDays = getNumberOfDays() * forecastingYears;
+    private static final int DEGREES_PER_REVOLUTION = 360;
+    private SunCartesianCoordinate sunCartesianCoordinate;
+
+    public DailyForecastHelper(SunCartesianCoordinate sunCartesianCoordinate) {
+        this.sunCartesianCoordinate = sunCartesianCoordinate;
+    }
+
+    public List<DailyForecast> calculateForecasts(int forecastingYears) {
+        log.info(format("Weather Forecast calculation requested for {0} year(s)", forecastingYears));
+
         WeatherEnum lastWeather = WeatherEnum.UNKNOWN;
+        int numberOfDays = getMaxNumberOfDaysPerYear() * forecastingYears;
+        List<DailyForecast> forecasts = new ArrayList<>(numberOfDays);
         for (int day = 1, season = 0; day <= numberOfDays; day++) {
             SolarSystemDailyCartesianCoordinate solarSystemCoordinate = CoordinateHelper.transform(new SolarSystemDailyPolarCoordinate(day));
             TriangleArea triangle = new TriangleArea(
@@ -37,7 +49,7 @@ public class DailyForecastHelper {
                     solarSystemCoordinate.getBetasoideCoordinate()
             );
             double triangleArea = AreaHelper.getArea(triangle);
-            double quadrilateralArea = AreaHelper.getArea(new QuadrilateralArea(
+            /*double quadrilateralArea = AreaHelper.getArea(new QuadrilateralArea(
                     new TriangleArea(
                             solarSystemCoordinate.getVulcanoCoordinate(),
                             solarSystemCoordinate.getFerengiCoordinate(),
@@ -48,12 +60,35 @@ public class DailyForecastHelper {
                             solarSystemCoordinate.getFerengiCoordinate(),
                             sunCartesianCoordinate
                     )
-            ));
-            boolean isPlanetAligned = triangleArea < AREA_CONSIDERED_AS_ZERO;
-            boolean isSunInside = triangleArea >= quadrilateralArea;
+            ));*/
+            boolean isPlanetAligned = AreaHelper.isAligned(triangle);
+            //boolean isSunInside = quadrilateralArea < AREA_NEAR_ZERO || triangleArea >= quadrilateralArea;
+            boolean isSunInside;
+            if(isPlanetAligned){
+                isSunInside = AreaHelper.isAligned(new TriangleArea(
+                        solarSystemCoordinate.getFerengiCoordinate(),
+                        solarSystemCoordinate.getVulcanoCoordinate(),
+                        sunCartesianCoordinate
+                ));
+            } else {
+                Polygon polygon = new Polygon(triangle.getXAxis(), triangle.getYAxis(), 3);
+                isSunInside = polygon.contains(0, 0);
+            }
+
             DailyForecast forecast = new DailyForecast();
             forecast.setDay(day);
             forecast.setTrianglePerimeter(AreaHelper.getPerimeter(triangle));
+            forecast.setTriangleArea(triangleArea);
+            //forecast.setQuadrilateralArea(quadrilateralArea);
+
+            int daysInVulcano = -1 * (day * VULCANO.getDegreesPerDay());
+            int daysInFerengi = day * FERENGI.getDegreesPerDay();
+            int daysInBetasoide = day * BETASOIDE.getDegreesPerDay();
+
+            forecast.setVulcanoDegrees(360 + (-1 * (daysInVulcano <= 360 ? daysInVulcano : daysInVulcano % 360)));
+            forecast.setFerengiDegrees(daysInFerengi <= 360 ? daysInFerengi : daysInFerengi % 360);
+            forecast.setBetasoideDegrees(daysInBetasoide <= 360 ? daysInBetasoide : daysInBetasoide % 360);
+
             if (isPlanetAligned && isSunInside) {
                 forecast.setWeather(SEQUIA);
             }
@@ -72,14 +107,15 @@ public class DailyForecastHelper {
             }
             forecast.setSeason(season);
             forecasts.add(forecast);
+            log.info(format("Weather Forecast calculated for day {0}", day), keyValue("forecast", forecast));
         }
         return forecasts;
     }
 
-    private static int getNumberOfDays() {
-        int ferengiDaysPerYear = DEGREES_PER_REVOLUTION / FERENGI.getDegreesPerDay();
-        int betasoideDaysPerYear = DEGREES_PER_REVOLUTION / BETASOIDE.getDegreesPerDay();
-        int vulcanoDaysPerYear = DEGREES_PER_REVOLUTION / VULCANO.getDegreesPerDay();
+    private int getMaxNumberOfDaysPerYear() {
+        int ferengiDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / FERENGI.getDegreesPerDay());
+        int betasoideDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / BETASOIDE.getDegreesPerDay());
+        int vulcanoDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / VULCANO.getDegreesPerDay());
         return Math.max(Math.max(ferengiDaysPerYear, betasoideDaysPerYear), vulcanoDaysPerYear);
     }
 

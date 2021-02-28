@@ -1,16 +1,19 @@
 package com.meli.forecasts.weather.dto;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public enum PlanetEnum {
 
-    FERENGI(1, 500*1000, -1),
-    BETASOIDE(3, 2000*1000, -1),
-    VULCANO(5, 1000*1000, 1);
+    FERENGI(1, 500, TRUE),
+    BETASOIDE(3, 2000, TRUE),
+    VULCANO(-5, 1000, FALSE);
 
     private final Integer degreesPerDay;
     private final Integer radiusInMeters;
-    private final Integer clockwise;
+    private final Boolean clockwise;
 
-    PlanetEnum(Integer degreesPerDay, Integer radiusInMeters, Integer clockwise) {
+    PlanetEnum(Integer degreesPerDay, Integer radiusInMeters, Boolean clockwise) {
         this.degreesPerDay = degreesPerDay;
         this.radiusInMeters = radiusInMeters;
         this.clockwise = clockwise;
@@ -24,7 +27,7 @@ public enum PlanetEnum {
         return radiusInMeters;
     }
 
-    public Integer getClockwise() {
+    public Boolean getClockwise() {
         return clockwise;
     }
 }

@@ -1,17 +1,21 @@
 package com.meli.forecasts.weather.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.meli.forecasts.weather.dto.WeatherEnum;
 
 public class DailyForecastResponse {
 
+    @JsonProperty("dia")
     private int day;
+    @JsonProperty("clima")
     private WeatherEnum weather;
-    private String message;
 
-    public DailyForecastResponse(int day, WeatherEnum weather, String message) {
+    public DailyForecastResponse() {
+    }
+
+    public DailyForecastResponse(int day, WeatherEnum weather) {
         this.day = day;
         this.weather = weather;
-        this.message = message;
     }
 
     public int getDay() {
@@ -28,14 +32,6 @@ public class DailyForecastResponse {
 
     public void setWeather(WeatherEnum weather) {
         this.weather = weather;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
 }

@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface DailyForecastRepository extends JpaRepository<DailyForecast, Integer> {
 
-    List<DailyForecast> findAllOrderByDayAsc();
+    List<DailyForecast> findByOrderByDay();
 
 }

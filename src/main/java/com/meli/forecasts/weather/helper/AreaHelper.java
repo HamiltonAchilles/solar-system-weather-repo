@@ -2,14 +2,14 @@ package com.meli.forecasts.weather.helper;
 
 import com.meli.forecasts.weather.dto.area.QuadrilateralArea;
 import com.meli.forecasts.weather.dto.area.TriangleArea;
-import org.springframework.beans.factory.support.ManagedArray;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class AreaHelper {
 
-    private static final int SCALE = 12;
+    private static final long AREA_NEAR_ZERO = 30000;
+    private static final int SCALE = 3;
 
     public static double getArea(TriangleArea triangle) {
         double xA = triangle.getCoordinateA().getX();
@@ -28,13 +28,6 @@ public class AreaHelper {
                             multiply(xA, yC) -
                             multiply(xB, yA)
         );
-
-                /*(xA * yC) +
-                (xC * yA) +
-                (xB * yC) -
-                (xC * yB) -
-                (xA * yC) -
-                (xB * yA)*/
     }
 
     public static double getArea(QuadrilateralArea quadrilateralArea) {
@@ -57,24 +50,28 @@ public class AreaHelper {
                 pow2(xC - xB) + pow2(yC - yB)
         );
         double distanceCA = sqrt(
-                pow2(xC - xA) + pow2(yC - yA)
+                pow2(xA - xC) + pow2(yA - yC)
         );
         return distanceAB + distanceBC + distanceCA;
     }
 
     private static double sqrt(double val) {
-        return new BigDecimal(val).round(MathContext.DECIMAL64).setScale(SCALE).sqrt(MathContext.DECIMAL64).doubleValue();
+        return new BigDecimal(val).round(MathContext.DECIMAL32).setScale(8).sqrt(MathContext.DECIMAL32).doubleValue();
     }
 
     private static double pow2(double val) {
-        if(val < 1){
+        if(Math.abs(val) < 1){
             return 0.0;
         }
-        return new BigDecimal(val).round(MathContext.DECIMAL64).setScale(SCALE).pow(2).round(MathContext.DECIMAL64).doubleValue();
+        return new BigDecimal(val).round(MathContext.DECIMAL32).setScale(8).pow(2).round(MathContext.DECIMAL32).doubleValue();
     }
 
     private static double multiply(double valA, double valB){
         return valA * valB;
+    }
+
+    public static boolean isAligned(TriangleArea triangle) {
+        return getArea(triangle) < AREA_NEAR_ZERO;
     }
 
 }

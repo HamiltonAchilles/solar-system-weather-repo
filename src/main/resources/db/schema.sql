@@ -8,17 +8,22 @@ create table solar_system_weather.forecast
 
 alter table solar_system_weather.forecast owner to phzsddttkezqre;
 
+alter table solar_system_weather.forecast
+    add triangle_perimeter double precision;
 
-create table solar_system_weather.forecast_season
-(
-    id serial
-        constraint forecast_season_pk
-            primary key,
-    start_day integer not null,
-    end_day integer not null,
-    peak_rainy_day integer not null,
-    weather varchar not null
-);
+alter table solar_system_weather.forecast
+    add triangle_area double precision;
 
-alter table solar_system_weather.forecast_season owner to phzsddttkezqre;
+alter table solar_system_weather.forecast
+    add quadrilateral_area double precision;
+
+alter table solar_system_weather.forecast
+    add degrees_vulcano int;
+
+alter table solar_system_weather.forecast
+    add degrees_ferengi int;
+
+alter table solar_system_weather.forecast
+    add degrees_betasoide int;
+
 
