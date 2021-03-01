@@ -1,6 +1,7 @@
 package com.meli.forecasts.weather.model;
 
 import com.meli.forecasts.weather.dto.WeatherEnum;
+import io.swagger.models.auth.In;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,37 +9,37 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "forecast")
 public class DailyForecast {
 
     @Id
-    private int day;
+    private Integer day;
     @Enumerated(EnumType.STRING)
     @Column(name = "weather")
     private WeatherEnum weather;
     @Column(name = "season")
-    private int season;
+    private Integer season;
     @Column(name = "triangle_perimeter")
-    private double trianglePerimeter;
+    private Integer trianglePerimeter;
     @Column(name = "triangle_area")
-    private double triangleArea;
-    @Column(name = "quadrilateral_area")
-    private double quadrilateralArea;
+    private Integer triangleArea;
     @Column(name = "degrees_vulcano")
-    private int vulcanoDegrees;
+    private Integer vulcanoDegrees;
     @Column(name = "degrees_betasoide")
-    private int betasoideDegrees;
+    private Integer betasoideDegrees;
     @Column(name = "degrees_ferengi")
-    private int ferengiDegrees;
+    private Integer ferengiDegrees;
+    @Column(name = "peak_rainy_day")
+    private Boolean peakRainyDay = Boolean.FALSE;
 
-
-    public int getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
@@ -50,60 +51,60 @@ public class DailyForecast {
         this.weather = weather;
     }
 
-    public int getSeason() {
+    public Integer getSeason() {
         return season;
     }
 
-    public void setSeason(int season) {
+    public void setSeason(Integer season) {
         this.season = season;
     }
 
-    public double getTrianglePerimeter() {
+    public Integer getTrianglePerimeter() {
         return trianglePerimeter;
     }
 
-    public void setTrianglePerimeter(double trianglePerimeter) {
+    public void setTrianglePerimeter(Integer trianglePerimeter) {
         this.trianglePerimeter = trianglePerimeter;
     }
 
-    public double getTriangleArea() {
+    public Integer getTriangleArea() {
         return triangleArea;
     }
 
-    public void setTriangleArea(double triangleArea) {
+    public void setTriangleArea(Integer triangleArea) {
         this.triangleArea = triangleArea;
     }
 
-    public double getQuadrilateralArea() {
-        return quadrilateralArea;
-    }
-
-    public void setQuadrilateralArea(double quadrilateralArea) {
-        this.quadrilateralArea = quadrilateralArea;
-    }
-
-    public int getVulcanoDegrees() {
+    public Integer getVulcanoDegrees() {
         return vulcanoDegrees;
     }
 
-    public void setVulcanoDegrees(int vulcanoDegrees) {
+    public void setVulcanoDegrees(Integer vulcanoDegrees) {
         this.vulcanoDegrees = vulcanoDegrees;
     }
 
-    public int getBetasoideDegrees() {
+    public Integer getBetasoideDegrees() {
         return betasoideDegrees;
     }
 
-    public void setBetasoideDegrees(int betasoideDegrees) {
+    public void setBetasoideDegrees(Integer betasoideDegrees) {
         this.betasoideDegrees = betasoideDegrees;
     }
 
-    public int getFerengiDegrees() {
+    public Integer getFerengiDegrees() {
         return ferengiDegrees;
     }
 
-    public void setFerengiDegrees(int ferengiDegrees) {
+    public void setFerengiDegrees(Integer ferengiDegrees) {
         this.ferengiDegrees = ferengiDegrees;
+    }
+
+    public Boolean getPeakRainyDay() {
+        return peakRainyDay;
+    }
+
+    public void setPeakRainyDay(Boolean peakRainyDay) {
+        this.peakRainyDay = peakRainyDay;
     }
 
 }

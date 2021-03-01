@@ -9,6 +9,8 @@ public class DailyForecastResponse {
     private int day;
     @JsonProperty("clima")
     private WeatherEnum weather;
+    @JsonProperty("pico_maximo_lluvia")
+    private boolean peakRainyDay;
 
     public DailyForecastResponse() {
     }
@@ -32,6 +34,14 @@ public class DailyForecastResponse {
 
     public void setWeather(WeatherEnum weather) {
         this.weather = weather;
+    }
+
+    public boolean isPeakRainyDay() {
+        return peakRainyDay;
+    }
+
+    public void setPeakRainyDay(boolean peakRainyDay) {
+        this.peakRainyDay = peakRainyDay;
     }
 
 }

@@ -1,10 +1,13 @@
 package com.meli.forecasts.weather.controller;
 
 import com.meli.forecasts.weather.dto.Configurations;
+import com.meli.forecasts.weather.dto.WeatherEnum;
 import com.meli.forecasts.weather.dto.response.DailyForecastResponse;
+import com.meli.forecasts.weather.dto.response.DailyForecastSummaryResponse;
 import com.meli.forecasts.weather.dto.response.ResponseDto;
 import com.meli.forecasts.weather.model.DailyForecast;
 import com.meli.forecasts.weather.service.WeatherForecastService;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,10 +61,18 @@ public class WeatherForecastController {
     public ResponseEntity<DailyForecastResponse> retrieveForecastForDay(@PathVariable Integer day) {
         Optional<DailyForecast> forecast = service.findForecastByDay(day);
         if (forecast.isPresent()) {
-            return ResponseEntity.ok(new DailyForecastResponse(forecast.get().getDay(), forecast.get().getWeather()));
-        } else {
+            return ResponseEntity.ok(convertToDto(forecast.get()));
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(path = "/forecasts/summary")
+    public ResponseEntity<Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>>> retrieveForecastSummary() {
+        Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> map = service.findSeasonForecast();
+        if(map.isEmpty()){
             return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.ok(map);
     }
 
     private DailyForecastResponse convertToDto(DailyForecast dailyForecast) {

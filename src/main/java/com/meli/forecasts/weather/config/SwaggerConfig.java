@@ -1,4 +1,4 @@
-package br.com.linx.gateway.paymentservice.config;
+package com.meli.forecasts.weather.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("br.com.linx.gateway.paymentservice.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.meli.forecasts.weather.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false)
@@ -36,8 +36,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Payment Service API")
-                .description("API responsável por orquestrar as requisições de pagamentos do Gateway de Pagamentos Linx")
+                .title("Weather Forecast Service API")
+                .description("API responsible for weather forecast.")
                 .version("1.0.0")
                 .build();
     }

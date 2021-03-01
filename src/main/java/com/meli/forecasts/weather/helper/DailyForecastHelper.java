@@ -1,7 +1,7 @@
 package com.meli.forecasts.weather.helper;
 
+import com.meli.forecasts.weather.dto.PlanetEnum;
 import com.meli.forecasts.weather.dto.WeatherEnum;
-import com.meli.forecasts.weather.dto.area.QuadrilateralArea;
 import com.meli.forecasts.weather.dto.area.TriangleArea;
 import com.meli.forecasts.weather.dto.coordinate.cartesian.SolarSystemDailyCartesianCoordinate;
 import com.meli.forecasts.weather.dto.coordinate.cartesian.SunCartesianCoordinate;
@@ -37,9 +37,8 @@ public class DailyForecastHelper {
 
     public List<DailyForecast> calculateForecasts(int forecastingYears) {
         log.info(format("Weather Forecast calculation requested for {0} year(s)", forecastingYears));
-
         WeatherEnum lastWeather = WeatherEnum.UNKNOWN;
-        int numberOfDays = getMaxNumberOfDaysPerYear() * forecastingYears;
+        int numberOfDays = getMinDaysForOneRevolutionOnAllPlanets() * forecastingYears;
         List<DailyForecast> forecasts = new ArrayList<>(numberOfDays);
         for (int day = 1, season = 0; day <= numberOfDays; day++) {
             SolarSystemDailyCartesianCoordinate solarSystemCoordinate = CoordinateHelper.transform(new SolarSystemDailyPolarCoordinate(day));
@@ -48,23 +47,10 @@ public class DailyForecastHelper {
                     solarSystemCoordinate.getVulcanoCoordinate(),
                     solarSystemCoordinate.getBetasoideCoordinate()
             );
-            double triangleArea = AreaHelper.getArea(triangle);
-            /*double quadrilateralArea = AreaHelper.getArea(new QuadrilateralArea(
-                    new TriangleArea(
-                            solarSystemCoordinate.getVulcanoCoordinate(),
-                            solarSystemCoordinate.getFerengiCoordinate(),
-                            sunCartesianCoordinate
-                    ),
-                    new TriangleArea(
-                            solarSystemCoordinate.getBetasoideCoordinate(),
-                            solarSystemCoordinate.getFerengiCoordinate(),
-                            sunCartesianCoordinate
-                    )
-            ));*/
+            int triangleArea = AreaHelper.getArea(triangle);
             boolean isPlanetAligned = AreaHelper.isAligned(triangle);
-            //boolean isSunInside = quadrilateralArea < AREA_NEAR_ZERO || triangleArea >= quadrilateralArea;
             boolean isSunInside;
-            if(isPlanetAligned){
+            if (isPlanetAligned) {
                 isSunInside = AreaHelper.isAligned(new TriangleArea(
                         solarSystemCoordinate.getFerengiCoordinate(),
                         solarSystemCoordinate.getVulcanoCoordinate(),
@@ -74,21 +60,13 @@ public class DailyForecastHelper {
                 Polygon polygon = new Polygon(triangle.getXAxis(), triangle.getYAxis(), 3);
                 isSunInside = polygon.contains(0, 0);
             }
-
             DailyForecast forecast = new DailyForecast();
             forecast.setDay(day);
             forecast.setTrianglePerimeter(AreaHelper.getPerimeter(triangle));
             forecast.setTriangleArea(triangleArea);
-            //forecast.setQuadrilateralArea(quadrilateralArea);
-
-            int daysInVulcano = -1 * (day * VULCANO.getDegreesPerDay());
-            int daysInFerengi = day * FERENGI.getDegreesPerDay();
-            int daysInBetasoide = day * BETASOIDE.getDegreesPerDay();
-
-            forecast.setVulcanoDegrees(360 + (-1 * (daysInVulcano <= 360 ? daysInVulcano : daysInVulcano % 360)));
-            forecast.setFerengiDegrees(daysInFerengi <= 360 ? daysInFerengi : daysInFerengi % 360);
-            forecast.setBetasoideDegrees(daysInBetasoide <= 360 ? daysInBetasoide : daysInBetasoide % 360);
-
+            forecast.setVulcanoDegrees(getDegreesAtDay(day, VULCANO));
+            forecast.setFerengiDegrees(getDegreesAtDay(day, FERENGI));
+            forecast.setBetasoideDegrees(getDegreesAtDay(day, BETASOIDE));
             if (isPlanetAligned && isSunInside) {
                 forecast.setWeather(SEQUIA);
             }
@@ -112,7 +90,24 @@ public class DailyForecastHelper {
         return forecasts;
     }
 
-    private int getMaxNumberOfDaysPerYear() {
+    /**
+     * Converts degrees greater than 360 for the range of 0 to 360, always positive, for a given day on a specific planet.
+     */
+    private int getDegreesAtDay(int day, PlanetEnum planet) {
+        int clockwise = planet.getClockwise() ? 1 : -1;
+        int degrees = clockwise * (day * planet.getDegreesPerDay());
+        int convertedDegree = (clockwise * (degrees <= DEGREES_PER_REVOLUTION ? degrees : degrees % DEGREES_PER_REVOLUTION));
+        if(clockwise < 0) {
+            return DEGREES_PER_REVOLUTION + convertedDegree;
+        } else {
+            return convertedDegree;
+        }
+    }
+
+    /**
+     * Returns the number of days enough for all planets to complete at least one revolution around the Sun
+     */
+    private int getMinDaysForOneRevolutionOnAllPlanets() {
         int ferengiDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / FERENGI.getDegreesPerDay());
         int betasoideDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / BETASOIDE.getDegreesPerDay());
         int vulcanoDaysPerYear = Math.abs(DEGREES_PER_REVOLUTION / VULCANO.getDegreesPerDay());

@@ -1,8 +1,12 @@
 package com.meli.forecasts.weather.service;
 
+import com.meli.forecasts.weather.dto.WeatherEnum;
+import com.meli.forecasts.weather.dto.response.DailyForecastResponse;
+import com.meli.forecasts.weather.dto.response.DailyForecastSummaryResponse;
 import com.meli.forecasts.weather.helper.DailyForecastHelper;
 import com.meli.forecasts.weather.model.DailyForecast;
 import com.meli.forecasts.weather.repository.DailyForecastRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +15,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.meli.forecasts.weather.dto.WeatherEnum.LLUVIA;
-import static com.meli.forecasts.weather.dto.WeatherEnum.LLUVIA_PICO_MAXIMO;
 import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.maxBy;
@@ -28,11 +32,25 @@ public class WeatherForecastService {
     private int FORECASTING_YEARS;
     private DailyForecastRepository repository;
     private DailyForecastHelper helper;
+    private ModelMapper modelMapper;
 
     public WeatherForecastService(
-            DailyForecastRepository repository, DailyForecastHelper helper) {
+            DailyForecastRepository repository, DailyForecastHelper helper, ModelMapper modelMapper) {
         this.repository = repository;
         this.helper = helper;
+        this.modelMapper = modelMapper;
+    }
+
+    public Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> findSeasonForecast() {
+        List<DailyForecast> forecasts = findAllDailyForecasts();
+        List<DailyForecastSummaryResponse> summaryForecasts = forecasts.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> map = summaryForecasts.stream()
+                                                                           .collect(groupingBy(
+                                                                                   DailyForecastSummaryResponse::getWeather,
+                                                                                   groupingBy(DailyForecastSummaryResponse::getSeason))
+                                                                           );
+        return map;
     }
 
     public List<DailyForecast> findAllDailyForecasts() {
@@ -52,7 +70,7 @@ public class WeatherForecastService {
     @Transactional
     public void calculateAndSaveForecasts() {
         List<DailyForecast> forecasts = helper.calculateForecasts(FORECASTING_YEARS);
-        /*repository.deleteAll();
+        repository.deleteAll();
         log.debug("All previous forecasts deleted.");
         repository.saveAll(forecasts);
         log.debug("All new forecasts saved.");
@@ -63,11 +81,15 @@ public class WeatherForecastService {
         seasonsMap.forEach((integer, dailyForecast) -> {
             if (dailyForecast.get().getWeather() == LLUVIA) {
                 final DailyForecast forecast = dailyForecast.get();
-                forecast.setWeather(LLUVIA_PICO_MAXIMO);
+                forecast.setPeakRainyDay(Boolean.TRUE);
                 repository.save(forecast);
             }
         });
-        log.debug("Forecasts updated regarding to 'LLUVIA_PICO_MAXIMO' weather.");*/
+        log.debug("Forecasts updated regarding to 'LLUVIA_PICO_MAXIMO' weather.");
+    }
+
+    private DailyForecastSummaryResponse convertToDto(DailyForecast dailyForecast) {
+        return modelMapper.map(dailyForecast, DailyForecastSummaryResponse.class);
     }
 
 }
