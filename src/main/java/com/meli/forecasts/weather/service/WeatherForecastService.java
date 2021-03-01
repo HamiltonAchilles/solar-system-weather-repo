@@ -1,8 +1,9 @@
 package com.meli.forecasts.weather.service;
 
 import com.meli.forecasts.weather.dto.WeatherEnum;
-import com.meli.forecasts.weather.dto.response.DailyForecastResponse;
 import com.meli.forecasts.weather.dto.response.DailyForecastSummaryResponse;
+import com.meli.forecasts.weather.dto.response.Season;
+import com.meli.forecasts.weather.dto.response.SummaryResponse;
 import com.meli.forecasts.weather.helper.DailyForecastHelper;
 import com.meli.forecasts.weather.model.DailyForecast;
 import com.meli.forecasts.weather.repository.DailyForecastRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -41,16 +43,28 @@ public class WeatherForecastService {
         this.modelMapper = modelMapper;
     }
 
-    public Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> findSeasonForecast() {
+    public List<SummaryResponse> findSeasonForecast() {
         List<DailyForecast> forecasts = findAllDailyForecasts();
         List<DailyForecastSummaryResponse> summaryForecasts = forecasts.stream().map(this::convertToDto).collect(Collectors.toList());
-
         Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> map = summaryForecasts.stream()
-                                                                           .collect(groupingBy(
-                                                                                   DailyForecastSummaryResponse::getWeather,
-                                                                                   groupingBy(DailyForecastSummaryResponse::getSeason))
-                                                                           );
-        return map;
+                                                                                                 .collect(groupingBy(
+                                                                                                         DailyForecastSummaryResponse::getWeather,
+                                                                                                         groupingBy(DailyForecastSummaryResponse::getSeason))
+                                                                                                 );
+        List<SummaryResponse> summaries = new ArrayList<>();
+        map.forEach((weather, seasons) -> {
+                        SummaryResponse summary = new SummaryResponse();
+                        List<Season> seasonsList = new ArrayList<>();
+                        seasons.forEach((season, dailyForecastSummaryResponses) -> {
+                            seasonsList.add(new Season(season, dailyForecastSummaryResponses.size(), dailyForecastSummaryResponses));
+                        });
+                        summary.setNumberOfSeasons(seasons.size());
+                        summary.setWeather(weather);
+                        summary.setSeasons(seasonsList);
+                        summaries.add(summary);
+                    }
+        );
+        return summaries;
     }
 
     public List<DailyForecast> findAllDailyForecasts() {

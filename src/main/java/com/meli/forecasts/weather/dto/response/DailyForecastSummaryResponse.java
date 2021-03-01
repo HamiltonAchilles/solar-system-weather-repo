@@ -8,20 +8,12 @@ public class DailyForecastSummaryResponse {
 
     @JsonProperty("dia")
     private int day;
-    @JsonProperty("pico_maximo_lluvia")
+    @JsonProperty("pico_lluvia")
     private boolean peakRainyDay;
     @JsonIgnore
     private int season;
     @JsonIgnore
     private WeatherEnum weather;
-
-    public DailyForecastSummaryResponse() {
-    }
-
-    public DailyForecastSummaryResponse(int day, WeatherEnum weather) {
-        this.day = day;
-        this.weather = weather;
-    }
 
     public int getDay() {
         return day;

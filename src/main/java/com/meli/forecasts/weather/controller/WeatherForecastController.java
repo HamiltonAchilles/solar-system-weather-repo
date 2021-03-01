@@ -5,6 +5,7 @@ import com.meli.forecasts.weather.dto.WeatherEnum;
 import com.meli.forecasts.weather.dto.response.DailyForecastResponse;
 import com.meli.forecasts.weather.dto.response.DailyForecastSummaryResponse;
 import com.meli.forecasts.weather.dto.response.ResponseDto;
+import com.meli.forecasts.weather.dto.response.SummaryResponse;
 import com.meli.forecasts.weather.model.DailyForecast;
 import com.meli.forecasts.weather.service.WeatherForecastService;
 import io.swagger.annotations.ApiOperation;
@@ -67,12 +68,12 @@ public class WeatherForecastController {
     }
 
     @GetMapping(path = "/forecasts/summary")
-    public ResponseEntity<Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>>> retrieveForecastSummary() {
-        Map<WeatherEnum, Map<Integer, List<DailyForecastSummaryResponse>>> map = service.findSeasonForecast();
-        if(map.isEmpty()){
+    public ResponseEntity<List<SummaryResponse>> retrieveForecastSummary() {
+        List<SummaryResponse> summaries = service.findSeasonForecast();
+        if(summaries.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(summaries);
     }
 
     private DailyForecastResponse convertToDto(DailyForecast dailyForecast) {
