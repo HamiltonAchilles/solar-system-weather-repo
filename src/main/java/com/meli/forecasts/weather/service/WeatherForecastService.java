@@ -51,12 +51,17 @@ public class WeatherForecastService {
                                                                                                          DailyForecastSummaryResponse::getWeather,
                                                                                                          groupingBy(DailyForecastSummaryResponse::getSeason))
                                                                                                  );
-        List<SummaryResponse> summaries = new ArrayList<>();
+        List<SummaryResponse> summaries = new ArrayList<>(map.size());
         map.forEach((weather, seasons) -> {
                         SummaryResponse summary = new SummaryResponse();
                         List<Season> seasonsList = new ArrayList<>();
                         seasons.forEach((season, dailyForecastSummaryResponses) -> {
-                            seasonsList.add(new Season(season, dailyForecastSummaryResponses.size(), dailyForecastSummaryResponses));
+                            Optional<DailyForecastSummaryResponse> peakRainyDay = dailyForecastSummaryResponses.stream().filter(dailyForecast -> dailyForecast.isPeakRainyDay()).findFirst();
+                            if(peakRainyDay.isPresent()) {
+                                seasonsList.add(new Season(season, dailyForecastSummaryResponses.size(), peakRainyDay.get().getDay()));
+                            } else {
+                                seasonsList.add(new Season(season, dailyForecastSummaryResponses.size()));
+                            }
                         });
                         summary.setNumberOfSeasons(seasons.size());
                         summary.setWeather(weather);

@@ -2,29 +2,32 @@ package com.meli.forecasts.weather.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 public class Season {
 
     @JsonProperty("periodo")
     private int season;
     @JsonProperty("duracion_periodo_dias")
     private int numberOfDays;
-    @JsonProperty("dia")
-    private List<DailyForecastSummaryResponse> dailyForecasts;
+    @JsonProperty("pico_lluvia_dia")
+    private Integer peakRainyDay;
 
-    public Season(int season, int numberOfDays, List<DailyForecastSummaryResponse> dailyForecasts) {
-        this.numberOfDays = numberOfDays;
-        this.dailyForecasts = dailyForecasts;
+    public Season(int season, int numberOfDays, Integer peakRainyDay) {
         this.season = season;
+        this.numberOfDays = numberOfDays;
+        this.peakRainyDay = peakRainyDay;
     }
 
-    public List<DailyForecastSummaryResponse> getDailyForecasts() {
-        return dailyForecasts;
+    public Season(int season, int numberOfDays) {
+        this.season = season;
+        this.numberOfDays = numberOfDays;
     }
 
-    public void setDailyForecasts(List<DailyForecastSummaryResponse> dailyForecasts) {
-        this.dailyForecasts = dailyForecasts;
+    public Integer getPeakRainyDay() {
+        return peakRainyDay;
+    }
+
+    public void setPeakRainyDay(Integer peakRainyDay) {
+        this.peakRainyDay = peakRainyDay;
     }
 
     public int getSeason() {
